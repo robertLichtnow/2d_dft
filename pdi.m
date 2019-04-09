@@ -1,4 +1,4 @@
-clc all
+clc 
 close all
 clear all
 
@@ -14,15 +14,15 @@ IM_FFT2 = fft2(IM); %A transformada ocorre aqui
 
 IM_FFT2 = fftshift(IM_FFT2); %Aqui ocorre a translação, matlab sugere que a translação seja feita sempre após a FFT2
 
-ParteReal = abs(IM_FFT2); %Gera a imagem de amplitude para plotar
+Amplitude = abs(IM_FFT2); %Gera a imagem de amplitude para plotar
 
-minimun = min(min(ParteReal));
-maximun = max(max(ParteReal));
+minimun = min(min(Amplitude));
+maximun = max(max(Amplitude));
 
-ParteReal = (ParteReal - minimun)./(maximun-minimun)*255; %Clamping
+Amplitude = (Amplitude - minimun)./(maximun-minimun)*255; %Clamping
 
 subplot(2,3,2);
-imshow(ParteReal);
+imshow(Amplitude);
 
 Mascara = imread('mascara-1.png'); %Mascara 1 é a melhor opção
 Mascara = im2bw(Mascara, 0.8); %Treshhold de 0.8 apenas para garantir imagem binária
