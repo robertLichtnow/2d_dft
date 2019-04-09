@@ -1,3 +1,4 @@
+clc all
 close all
 clear all
 
@@ -6,45 +7,55 @@ IM=imread('passaro.jpg');
 
 IM = rgb2gray(IM); %imagem em escala de cinSaidaa
 
-figure(1);
+subplot(2,3,1); 
 imshow(IM);
 
-IM_FFT2 = fft2(IM);
+IM_FFT2 = fft2(IM); %A transformada ocorre aqui
 
-IM_FFT2 = fftshift(IM_FFT2); %Aqui ocorre a translação
+IM_FFT2 = fftshift(IM_FFT2); %Aqui ocorre a translação, matlab sugere que a translação seja feita sempre após a FFT2
 
-ParteReal = abs(IM_FFT2);
+ParteReal = abs(IM_FFT2); %Gera a imagem de amplitude para plotar
 
 minimun = min(min(ParteReal));
 maximun = max(max(ParteReal));
 
-ParteReal = (ParteReal - minimun)./(maximun-minimun).*255;
+ParteReal = (ParteReal - minimun)./(maximun-minimun)*255; %Clamping
 
-figure(2)
+subplot(2,3,2);
 imshow(ParteReal);
 
-Mascara = imread('mascara-full.png');
-Mascara = im2bw(Mascara, 0.8);
+Mascara = imread('mascara-1.png'); %Mascara 1 é a melhor opção
+Mascara = im2bw(Mascara, 0.8); %Treshhold de 0.8 apenas para garantir imagem binária
+%Mascara = (1-Mascara).^2; %Inversão do filtro
 
-figure(3)
+subplot(2,3,3);
 imshow(Mascara);
 
 
-Im_multi = immultiply(Mascara,ParteReal);
-Im_multi = uint8(Im_multi);
+Im_multi = times(Mascara,real(IM_FFT2)); %Multiplicação em arranjo matricial
 
-Saida = complex(Im_multi,imag(IM_FFT2));
-Saida = ifftshift(Saida);
-Saida = ifft2(Saida);
-Saida = abs(Saida);
+subplot(2,3,4);
+imshow(Im_multi);
+
+Saida = complex(Im_multi,imag(IM_FFT2)); %Gera matrix complexa novamente
+Saida = ifftshift(Saida); %Translação inversa
+Saida = ifft2(Saida); %Transformada inversa
+Saida = real(Saida);  %Devido a precisão de pontos flutuantes o resultado possui resquiciios imaginarios
 
 minimun = min(min(Saida));
 maximun = max(max(Saida));
 
-Saida = (Saida - minimun)./(maximun-minimun).*255;
+Saida = (Saida - minimun)./(maximun-minimun)*255; %Clamping
+Saida = uint8(Saida);
 
-figure(4);
-imshow(uint8(Saida));
+subplot(2,3,5);
+imshow(Saida);
+
+Compare = Saida - IM;
+
+subplot(2,3,6);
+imshow(Compare);
+
 
 
 
