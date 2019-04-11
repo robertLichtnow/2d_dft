@@ -26,9 +26,29 @@ Amplitude = (Amplitude - minimun)./(maximun-minimun)*255; %Clamping da imagem da
 subplot(2,3,2);
 imshow(Amplitude); %plot da imagem da amplitude
 
-Mascara = imread('mascara-1.png'); %Mascara 1 é a correta
-Mascara = im2bw(Mascara, 0.8); %Treshhold de 0.8 apenas para garantir imagem binária
+%Mascara = imread('mascara-1.png'); %Mascara 1 é a correta
+%Mascara = im2bw(Mascara, 0.8); %Treshhold de 0.8 apenas para garantir imagem binária
 %Mascara = (1-Mascara).^2; %Inversão do filtro, descomente esta linha para inverter o filtro
+
+%{
+[x,y] = size(IM);
+
+fator = 50;
+
+Mascara = zeros(x,y);
+Mascara(x/2 - fator: x/2 + fator, y/2 - fator:y/2 + fator) = 1;
+%}
+%Bloco do filtro passa baixa
+
+
+[x,y] = size(IM);
+
+fator = 50;
+
+Mascara = ones(x,y);
+Mascara(x/2 - fator: x/2 + fator, y/2 - fator:y/2 + fator) = 0;
+
+
 
 subplot(2,3,3);
 imshow(Mascara); %plotando o filtro
